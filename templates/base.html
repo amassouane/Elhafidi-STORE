@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ELHAFIDI STORE{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+
+    <script>
+        // Check for saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+    </script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('main.index') }}" class="nav-logo">ELHAFIDI STORE</a>
+            
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('main.index') }}">Accueil</a></li>
+                <li><a href="{{ url_for('shop.shop') }}">Boutique</a></li>
+                <li><a href="{{ url_for('shop.shop', category='Jackets') }}">Vêtements</a></li>
+                <li><a href="{{ url_for('shop.shop', category='Espadrilles') }}">Chaussures</a></li>
+            </ul>
+            
+            <div class="nav-icons">
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline" style="padding: 0.4rem 1rem; font-size: 0.9rem; margin-right: 0.5rem;">Admin</a>
+                <a href="{{ url_for('shop.shop') }}" class="icon-link search-icon"><i class="fas fa-search"></i></a>
+                <button class="icon-link theme-toggle" title="Basculer le thème" style="background:none; border:none; color:inherit;">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="{{ url_for('cart.view_cart') }}" class="icon-link cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">{{ session.get('cart', {}) | length }}</span>
+                </a>
+                <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay">
+        <div class="mobile-menu">
+            <button class="close-menu-btn"><i class="fas fa-times"></i></button>
+            <ul>
+                <li><a href="{{ url_for('main.index') }}">Accueil</a></li>
+                <li><a href="{{ url_for('shop.shop') }}">Boutique</a></li>
+                <li><a href="{{ url_for('shop.shop', category='Jackets') }}">Vêtements</a></li>
+                <li><a href="{{ url_for('shop.shop', category='Espadrilles') }}">Chaussures</a></li>
+                <li><a href="{{ url_for('cart.view_cart') }}">Panier</a></li>
+                <li style="margin-top: 1rem;"><a href="{{ url_for('admin.dashboard') }}" style="color: var(--accent-gold);">Espace Admin</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Flash Messages -->
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-alert flash-{{ category }}">
+                        {{ message }}
+                        <span class="close-flash">&times;</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h2>ELHAFIDI STORE</h2>
+                <p>Votre destination streetwear ultime. Des collections exclusives pour exprimer votre style urbain.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3>Liens Rapides</h3>
+                <ul>
+                    <li><a href="{{ url_for('main.index') }}">Accueil</a></li>
+                    <li><a href="{{ url_for('shop.shop') }}">Boutique</a></li>
+                    <li><a href="#">À propos</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Service Client</h3>
+                <ul>
+                    <li><a href="#">Livraison & Retours</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Guide des tailles</a></li>
+                    <li><a href="#">Conditions de vente</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Rue de la Mode, Ville</p>
+                <p><i class="fas fa-phone-alt"></i> +212 600 000 000</p>
+                <p><i class="fas fa-envelope"></i> contact@elhafidistore.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 ELHAFIDI STORE. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

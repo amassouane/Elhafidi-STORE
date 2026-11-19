@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% block title %}ELHAFIDI STORE - Streetwear Ultime{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Hero Section */
+.hero {
+    height: 80vh;
+    background: linear-gradient(rgba(18,18,18,0.7), rgba(18,18,18,0.7)), url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+.hero-content h1 {
+    font-size: 6rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+}
+.hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: var(--text-muted);
+}
+.hero-content span.highlight {
+    color: var(--accent-red);
+}
+
+/* Section Titles */
+.section-title {
+    text-align: center;
+    font-size: 3rem;
+    margin: 4rem 0 2rem;
+    position: relative;
+}
+.section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background-color: var(--accent-red);
+    margin: 10px auto 0;
+}
+
+/* Product Grid */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+.product-card {
+    background-color: var(--bg-surface);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    border-color: var(--accent-gold);
+}
+.product-img {
+    height: 350px;
+    width: 100%;
+    object-fit: cover;
+}
+.product-info {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.product-category {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.product-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0.5rem 0;
+}
+.product-price {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--accent-gold);
+    margin-top: auto;
+}
+.badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: var(--accent-red);
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 4px;
+}
+
+/* Categories */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+}
+.category-card {
+    position: relative;
+    height: 250px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.category-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.category-card:hover img {
+    transform: scale(1.1);
+}
+.category-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    display: flex;
+    align-items: flex-end;
+    padding: 1.5rem;
+}
+.category-overlay h3 {
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+/* Banner */
+.promo-banner {
+    background-color: var(--accent-red);
+    color: #fff;
+    padding: 3rem 2rem;
+    text-align: center;
+    border-radius: 8px;
+    margin: 4rem 0;
+    background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+}
+.promo-banner h2 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+.promo-banner .btn {
+    background-color: #000;
+    color: var(--accent-gold);
+}
+.promo-banner .btn:hover {
+    background-color: #222;
+}
+
+@media (max-width: 900px) {
+    .hero-content h1 { font-size: 4rem; }
+    .category-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+    .category-grid { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>STREETWEAR <span class="highlight">ULTIME</span></h1>
+        <p>Découvrez la nouvelle collection urbaine exclusivité ELHAFIDI STORE.</p>
+        <a href="{{ url_for('shop.shop') }}" class="btn btn-primary">Explorer la Collection</a>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Nouveautés -->
+    <h2 class="section-title">NOUVEAUTÉS</h2>
+    <div class="product-grid">
+        {% for product in latest_products %}
+        <a href="{{ url_for('shop.product_detail', product_id=product.id) }}" class="product-card">
+            <div class="badge">NOUVEAU</div>
+            {% if product.image_url %}
+                <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="product-img">
+            {% else %}
+                <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="{{ product.name }}" class="product-img">
+            {% endif %}
+            <div class="product-info">
+                <span class="product-category">{{ product.category }}</span>
+                <h3 class="product-name">{{ product.name }}</h3>
+                <p class="product-price">{{ product.price | int }} MAD</p>
+            </div>
+        </a>
+        {% else %}
+        <p style="text-align:center; grid-column:1/-1;">Aucun produit disponible pour le moment.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Catégories -->
+    <h2 class="section-title">MAGASINER PAR CATÉGORIE</h2>
+    <div class="category-grid">
+        <a href="{{ url_for('shop.shop', category='Jackets') }}" class="category-card">
+            <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Jackets">
+            <div class="category-overlay"><h3>Jackets</h3></div>
+        </a>
+        <a href="{{ url_for('shop.shop', category='T-Shirts') }}" class="category-card">
+            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="T-Shirts">
+            <div class="category-overlay"><h3>T-Shirts</h3></div>
+        </a>
+        <a href="{{ url_for('shop.shop', category='Hoodies') }}" class="category-card">
+            <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Hoodies">
+            <div class="category-overlay"><h3>Hoodies</h3></div>
+        </a>
+        <a href="{{ url_for('shop.shop', category='Espadrilles') }}" class="category-card">
+            <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Espadrilles">
+            <div class="category-overlay"><h3>Espadrilles</h3></div>
+        </a>
+    </div>
+
+    <!-- Banner -->
+    <div class="promo-banner">
+        <h2>COLLECTION HIVER 2024</h2>
+        <p>Jusqu'à -30% sur une sélection d'articles exclusifs.</p>
+        <br>
+        <a href="{{ url_for('shop.shop') }}" class="btn">PROFITER DE L'OFFRE</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% block title %}Boutique - ELHAFIDI STORE{% endblock %}
+
+{% block extra_css %}
+<style>
+.shop-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.filters-container {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.filter-select {
+    padding: 0.5rem;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    font-family: var(--font-body);
+}
+
+.shop-layout {
+    display: block;
+}
+
+.filters-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.size-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.size-filter-group h3 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    margin: 0;
+    color: var(--accent-gold);
+}
+
+/* Category Tabs */
+.category-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+}
+
+.category-tab {
+    padding: 0.75rem 1.5rem;
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 50px;
+    color: var(--text-main);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.category-tab:hover, .category-tab.active {
+    background-color: var(--accent-red);
+    border-color: var(--accent-red);
+    color: #fff;
+}
+
+.size-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.size-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: var(--transition);
+}
+.size-btn:hover, .size-btn.active {
+    border-color: var(--accent-red);
+    background-color: var(--accent-red);
+}
+
+/* Redefine product grid for shop */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .filters-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 2rem;">
+    <div class="shop-header">
+        <h1>{% if current_category %}{{ current_category }}{% else %}TOUS LES PRODUITS{% endif %}</h1>
+        
+        <div class="filters-container">
+            <form action="{{ url_for('shop.shop') }}" method="GET" id="sortForm">
+                {% if current_category %}
+                <input type="hidden" name="category" value="{{ current_category }}">
+                {% endif %}
+                {% if current_size %}
+                <input type="hidden" name="size" value="{{ current_size }}">
+                {% endif %}
+                <select name="sort" class="filter-select" onchange="document.getElementById('sortForm').submit()">
+                    <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Nouveautés</option>
+                    <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Prix Croissant</option>
+                    <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Prix Décroissant</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="category-tabs">
+        <a href="{{ url_for('shop.shop', size=current_size, sort=current_sort) }}" class="category-tab {% if not current_category %}active{% endif %}">Tous</a>
+        <a href="{{ url_for('shop.shop', category='Jackets', size=current_size, sort=current_sort) }}" class="category-tab {% if current_category == 'Jackets' %}active{% endif %}">Jackets</a>
+        <a href="{{ url_for('shop.shop', category='T-Shirts', size=current_size, sort=current_sort) }}" class="category-tab {% if current_category == 'T-Shirts' %}active{% endif %}">T-Shirts</a>
+        <a href="{{ url_for('shop.shop', category='Sweatshirts', size=current_size, sort=current_sort) }}" class="category-tab {% if current_category == 'Sweatshirts' %}active{% endif %}">Sweatshirts</a>
+        <a href="{{ url_for('shop.shop', category='Hoodies', size=current_size, sort=current_sort) }}" class="category-tab {% if current_category == 'Hoodies' %}active{% endif %}">Hoodies</a>
+        <a href="{{ url_for('shop.shop', category='Casquettes', size=current_size, sort=current_sort) }}" class="category-tab {% if current_category == 'Casquettes' %}active{% endif %}">Casquettes</a>
+        <a href="{{ url_for('shop.shop', category='Espadrilles', size=current_size, sort=current_sort) }}" class="category-tab {% if current_category == 'Espadrilles' %}active{% endif %}">Espadrilles</a>
+        <a href="{{ url_for('shop.shop', category='Pantalons', size=current_size, sort=current_sort) }}" class="category-tab {% if current_category == 'Pantalons' %}active{% endif %}">Pantalons</a>
+        <a href="{{ url_for('shop.shop', category='Parfums', size=current_size, sort=current_sort) }}" class="category-tab {% if current_category == 'Parfums' %}active{% endif %}">Parfums</a>
+    </div>
+
+    <!-- Size Filters -->
+    <div class="filters-row">
+        <div class="size-filter-group">
+            <h3>TAILLES :</h3>
+            <div class="size-list">
+                {% for s in ['S', 'M', 'L', 'XL', 'XXL'] %}
+                <form action="{{ url_for('shop.shop') }}" method="GET" style="display:inline;">
+                    {% if current_category %}<input type="hidden" name="category" value="{{ current_category }}">{% endif %}
+                    <input type="hidden" name="sort" value="{{ current_sort }}">
+                    <input type="hidden" name="size" value="{{ s }}">
+                    <button type="submit" class="size-btn {% if current_size == s %}active{% endif %}">{{ s }}</button>
+                </form>
+                {% endfor %}
+                {% if current_size %}
+                <div style="margin-left: 10px;">
+                    <a href="{{ url_for('shop.shop', category=current_category, sort=current_sort) }}" style="color:var(--accent-red); font-size: 0.9rem; text-decoration: none;">Effacer la taille</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="shop-layout">
+        <main>
+            <div class="product-grid">
+                {% for product in products %}
+                <a href="{{ url_for('shop.product_detail', product_id=product.id) }}" class="product-card">
+                    {% if product.image_url %}
+                        <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="product-img">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="{{ product.name }}" class="product-img">
+                    {% endif %}
+                    <div class="product-info">
+                        <span class="product-category">{{ product.category }}</span>
+                        <h3 class="product-name">{{ product.name }}</h3>
+                        <p class="product-price">{{ product.price | int }} MAD</p>
+                    </div>
+                </a>
+                {% else %}
+                <p>Aucun produit trouvé avec ces critères.</p>
+                {% endfor %}
+            </div>
+
+            {% if pagination.pages > 1 %}
+            <div class="pagination">
+                {% for p in pagination.iter_pages() %}
+                    {% if p %}
+                        <a href="{{ url_for('shop.shop', page=p, category=current_category, size=current_size, sort=current_sort) }}" class="page-link {% if p == pagination.page %}active{% endif %}">{{ p }}</a>
+                    {% else %}
+                        <span class="page-link" style="border:none;">...</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</div>
+{% endblock %}

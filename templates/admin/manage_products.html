@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Gestion des Produits - ELHAFIDI STORE{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>PRODUITS</h1>
+        <a href="{{ url_for('admin.add_product') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Ajouter un produit</a>
+    </div>
+
+    <div style="background-color: var(--bg-surface); border-radius: 8px; overflow: hidden;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color: rgba(255,255,255,0.05);">
+                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color);">Image</th>
+                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color);">Nom</th>
+                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color);">Catégorie</th>
+                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color);">Prix</th>
+                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color);">Stock</th>
+                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color);">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);">
+                        {% if product.image_url %}
+                            <img src="{{ url_for('static', filename=product.image_url) }}" style="width: 50px; height: 60px; object-fit: cover; border-radius: 4px;">
+                        {% else %}
+                            <div style="width: 50px; height: 60px; background-color: var(--border-color); border-radius: 4px;"></div>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);">{{ product.name }}</td>
+                    <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);">{{ product.category }}</td>
+                    <td style="padding: 1rem; border-bottom: 1px solid var(--border-color); color:var(--accent-gold);">{{ product.price | int }} MAD</td>
+                    <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);">
+                        <form action="{{ url_for('admin.update_product_stock', id=product.id) }}" method="POST" style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="number" name="stock" value="{{ product.stock }}" min="0" class="form-control" style="width: 80px; padding: 0.3rem;">
+                            <button type="submit" class="btn btn-primary" style="padding: 0.3rem 0.6rem; font-size: 0.9rem;" title="Mettre à jour la quantité"><i class="fas fa-save"></i></button>
+                        </form>
+                    </td>
+                    <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);">
+                        <form action="{{ url_for('admin.delete_product', id=product.id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');" style="display:inline;">
+                            <button type="submit" class="btn" style="padding: 0.5rem; background-color: var(--accent-red); color:white; font-size:0.9rem;" title="Supprimer le produit"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-muted);">Aucun produit disponible.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

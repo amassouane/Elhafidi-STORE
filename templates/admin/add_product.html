@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Ajouter un Produit - ELHAFIDI STORE{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 2rem; max-width: 800px;">
+    <h1 style="margin-bottom: 2rem;"><i class="fas fa-arrow-left" style="cursor:pointer; margin-right: 1rem;" onclick="history.back()"></i>AJOUTER UN PRODUIT</h1>
+    
+    <div style="background-color: var(--bg-surface); padding: 3rem; border-radius: 8px;">
+        <form action="{{ url_for('admin.add_product') }}" method="POST" enctype="multipart/form-data">
+            
+            <div class="form-group">
+                <label>Nom du Produit *</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+                <div class="form-group">
+                    <label>Prix (MAD) *</label>
+                    <input type="number" name="price" step="0.01" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Catégorie *</label>
+                    <select name="category" class="form-control" required>
+                        <option value="Jackets">Jackets</option>
+                        <option value="T-Shirts">T-Shirts</option>
+                        <option value="Sweatshirts">Sweatshirts</option>
+                        <option value="Hoodies">Hoodies</option>
+                        <option value="Casquettes">Casquettes</option>
+                        <option value="Espadrilles">Espadrilles</option>
+                        <option value="Pantalons">Pantalons</option>
+                        <option value="Parfums">Parfums</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" class="form-control" rows="4"></textarea>
+            </div>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+                <div class="form-group">
+                    <label>Tailles (séparées par une virgule, ex: S, M, L, XL)</label>
+                    <input type="text" name="sizes" class="form-control" placeholder="S, M, L, XL">
+                </div>
+                <div class="form-group">
+                    <label>Couleurs (séparées par une virgule, ex: Noir, Blanc)</label>
+                    <input type="text" name="colors" class="form-control" placeholder="Noir, Blanc">
+                </div>
+            </div>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+                <div class="form-group">
+                    <label>Stock</label>
+                    <input type="number" name="stock" value="10" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Image du Produit</label>
+                    <input type="file" name="image" class="form-control" accept="image/*">
+                </div>
+            </div>
+            
+            <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; margin-top: 1rem;">
+                <input type="checkbox" name="is_featured" id="is_featured" style="width:20px; height:20px;">
+                <label for="is_featured" style="margin:0; cursor:pointer;">Produit en vedette</label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="margin-top: 2rem; width: 100%;">ENREGISTRER LE PRODUIT</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

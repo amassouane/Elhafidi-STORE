@@ -1,0 +1,23 @@
+# Environment / secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Database
+instance/
+*.db
+*.sqlite3
+
+# Uploaded images
+static/images/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

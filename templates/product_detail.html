@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} - ELHAFIDI STORE{% endblock %}
+
+{% block extra_css %}
+<style>
+.product-detail-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+}
+
+.product-gallery img {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.product-info-detail h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+.product-info-detail .category {
+    color: var(--accent-red);
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    display: block;
+}
+.product-info-detail .price {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--accent-gold);
+    margin-bottom: 2rem;
+}
+.product-info-detail .description {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    line-height: 1.8;
+}
+
+.option-group {
+    margin-bottom: 1.5rem;
+}
+.option-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+.size-selector {
+    display: flex;
+    gap: 0.5rem;
+}
+.size-selector input[type="radio"] {
+    display: none;
+}
+.size-selector label {
+    width: 45px; height: 45px;
+    display: flex; justify-content: center; align-items: center;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+.size-selector input[type="radio"]:checked + label {
+    background-color: var(--accent-red);
+    border-color: var(--accent-red);
+}
+
+.qty-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    width: max-content;
+}
+.qty-btn {
+    width: 40px; height: 40px;
+    background: transparent; border: none;
+    color: var(--text-main); font-size: 1.2rem;
+    cursor: pointer;
+}
+.qty-input {
+    width: 50px; height: 40px;
+    background: transparent; border: none;
+    color: var(--text-main); text-align: center;
+    font-size: 1.1rem;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+}
+
+.add-to-cart-btn {
+    width: 100%;
+    padding: 1.2rem;
+    font-size: 1.2rem;
+    margin-top: 2rem;
+    background-color: var(--accent-gold);
+    color: #000;
+    border: none;
+    font-family: var(--font-heading);
+    cursor: pointer;
+    transition: var(--transition);
+}
+.add-to-cart-btn:hover {
+    background-color: #b5952f;
+}
+
+@media (max-width: 900px) {
+    .product-detail-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="product-detail-container">
+        <!-- Gallery -->
+        <div class="product-gallery">
+            {% if product.image_url %}
+                <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}">
+            {% else %}
+                <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="{{ product.name }}">
+            {% endif %}
+        </div>
+        
+        <!-- Info -->
+        <div class="product-info-detail">
+            <span class="category">{{ product.category }}</span>
+            <h1>{{ product.name }}</h1>
+            <div class="price">{{ product.price | int }} MAD</div>
+            
+            <p class="description">{{ product.description or "Découvrez ce magnifique produit de notre nouvelle collection de streetwear urbain." }}</p>
+            
+            <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="POST">
+                {% if product.sizes and product.sizes != '[]' and product.sizes != '""' %}
+                <div class="option-group">
+                    <label>Sélectionnez une taille :</label>
+                    <div class="size-selector">
+                        {% set sizes = product.sizes.replace('[', '').replace(']', '').replace('"', '').replace(' ', '').split(',') %}
+                        {% for s in sizes %}
+                            {% if s %}
+                            <input type="radio" name="size" id="size_{{ s }}" value="{{ s }}" required>
+                            <label for="size_{{ s }}">{{ s }}</label>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="option-group">
+                    <label>Quantité :</label>
+                    <div class="qty-selector">
+                        <button type="button" class="qty-btn" onclick="document.getElementById('qty').stepDown()">-</button>
+                        <input type="number" id="qty" name="quantity" value="1" min="1" max="10" class="qty-input">
+                        <button type="button" class="qty-btn" onclick="document.getElementById('qty').stepUp()">+</button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="add-to-cart-btn"><i class="fas fa-shopping-cart"></i> AJOUTER AU PANIER</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Produits similaires -->
+    {% if similar_products %}
+    <h2 class="section-title" style="font-size: 2rem; text-align:left; margin-top:2rem;">VOUS AIMEREZ AUSSI</h2>
+    <div class="product-grid" style="grid-template-columns: repeat(4, 1fr);">
+        {% for prod in similar_products %}
+        <a href="{{ url_for('shop.product_detail', product_id=prod.id) }}" class="product-card">
+            {% if prod.image_url %}
+                <img src="{{ url_for('static', filename=prod.image_url) }}" alt="{{ prod.name }}" class="product-img" style="height:250px;">
+            {% else %}
+                <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="{{ prod.name }}" class="product-img" style="height:250px;">
+            {% endif %}
+            <div class="product-info">
+                <span class="product-category">{{ prod.category }}</span>
+                <h3 class="product-name" style="font-size: 1rem;">{{ prod.name }}</h3>
+                <p class="product-price" style="font-size: 1.2rem;">{{ prod.price | int }} MAD</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

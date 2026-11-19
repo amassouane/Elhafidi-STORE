@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Checkout - ELHAFIDI STORE{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 2rem; max-width: 800px;">
+    <h1 style="text-align:center; font-size: 3rem; margin-bottom:2rem; color:var(--accent-gold);">CHECKOUT</h1>
+    
+    <div style="background-color: var(--bg-surface); padding: 3rem; border-radius: 8px;">
+        <h2 style="font-family: var(--font-heading); margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom:1rem;">DÉTAILS DE FACTURATION</h2>
+        
+        <form action="{{ url_for('cart.checkout') }}" method="POST">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+                <div class="form-group">
+                    <label>Nom complet *</label>
+                    <input type="text" name="name" class="form-control" required placeholder="Votre nom et prénom">
+                </div>
+                <div class="form-group">
+                    <label>Téléphone *</label>
+                    <input type="tel" name="phone" class="form-control" required placeholder="+212 600000000">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" name="email" class="form-control" required placeholder="votre@email.com">
+            </div>
+            
+            <div class="form-group">
+                <label>Adresse de livraison *</label>
+                <input type="text" name="address" class="form-control" required placeholder="Appartement, rue, etc.">
+            </div>
+            
+            <div class="form-group">
+                <label>Ville *</label>
+                <select name="city" class="form-control" required>
+                    <option value="">Sélectionnez votre ville</option>
+                    <option value="Casablanca">Casablanca</option>
+                    <option value="Rabat">Rabat</option>
+                    <option value="Marrakech">Marrakech</option>
+                    <option value="Tanger">Tanger</option>
+                    <option value="Agadir">Agadir</option>
+                    <option value="Autre">Autre</option>
+                </select>
+            </div>
+            
+            <div style="margin-top: 2rem; padding: 1.5rem; border: 1px solid var(--border-color); border-radius:4px;">
+                <h3 style="margin-bottom: 1rem;"><i class="fas fa-truck"></i> Méthode de paiement</h3>
+                <p style="color: var(--accent-gold); font-weight:600;"><i class="fas fa-money-bill-wave"></i> Paiement à la livraison (Cash on Delivery)</p>
+                <p style="color: var(--text-muted); font-size:0.9rem; margin-top:0.5rem;">Vous paierez le montant total à la réception de votre commande.</p>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem; padding: 1.2rem; font-size:1.5rem;">CONFIRMER LA COMMANDE</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
